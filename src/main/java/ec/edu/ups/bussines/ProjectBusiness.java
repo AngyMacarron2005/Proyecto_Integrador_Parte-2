@@ -21,6 +21,6 @@ public class ProjectBusiness {
         p.setDescription("Proyecto creado desde Business");
 
         projectDAO.insert(p);
-        System.out.println("Proyecto creado 🌸");
+        System.out.println("Proyecto creado");
     }
 }

@@ -21,6 +21,6 @@ public class BookingBusiness {
         b.setDurationMin(60);
 
         bookingDAO.insert(b);
-        System.out.println("Booking creado ✨");
+        System.out.println("Booking creado");
     }
 }

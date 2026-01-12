@@ -3,7 +3,6 @@ package ec.edu.ups.models;
 import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.persistence.*;
-import ec.edu.ups.models.ProjectModel;
 
 @Entity
 @Table(name = "portfolios")
@@ -23,10 +22,6 @@ public class PortfolioModel {
 
     @OneToMany(mappedBy = "portfolio")
     private List<ProjectModel> projects;
-
-    /* =======================
-       GETTERS Y SETTERS
-       ======================= */
 
     public Long getId() {
         return id;
