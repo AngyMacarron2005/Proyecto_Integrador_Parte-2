@@ -1,39 +1,79 @@
 package ec.edu.ups.models;
-import ec.edu.ups.models.*;
-import ec.edu.ups.models.Enums.*;
-import java.time.LocalDateTime;
-import java.util.List;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "TBL_USER")
+@Table(name = "users")
 public class UserModel {
 
-	@Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UserModel id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "firebase_uid", unique = true)
     private String firebaseUid;
 
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "display_name")
     private String displayName;
+
+    @Column(name = "picture")
     private String picture;
 
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    @Column(name = "role")
+    private String role;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt;
-    private boolean deleted = false;
+    /* =======================
+       GETTERS Y SETTERS
+       ======================= */
 
-    @OneToOne(mappedBy = "user")	
-    private ProgrammerProfileModel profile;
+    public Long getId() {
+        return id;
+    }
 
-    //@OneToMany(mappedBy = "user")
-    //private List<SocialLink> socialLinks;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    @OneToMany(mappedBy = "requester")
-    private List<BookingModel> bookingsSent;
+    public String getFirebaseUid() {
+        return firebaseUid;
+    }
+
+    public void setFirebaseUid(String firebaseUid) {
+        this.firebaseUid = firebaseUid;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }
