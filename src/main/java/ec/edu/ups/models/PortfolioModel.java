@@ -20,6 +20,10 @@ public class PortfolioModel {
     private LocalDateTime createdAt = LocalDateTime.now();
     private boolean deleted = false;
 
+    @OneToOne
+    @JoinColumn(name = "owner_id", nullable = false, unique = true)
+    private ProgrammerProfileModel owner;
+    
     @OneToMany(mappedBy = "portfolio")
     private List<ProjectModel> projects;
 

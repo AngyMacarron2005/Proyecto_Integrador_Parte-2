@@ -30,8 +30,6 @@ public class ProgrammerProfileModel {
     private String specialty;
     private String bio;
     private String avatarUrl;
-
-    @Column(columnDefinition = "jsonb")
     private String contactLinks;
 
     private LocalDateTime createdAt = LocalDateTime.now();
