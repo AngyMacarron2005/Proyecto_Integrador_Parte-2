@@ -82,4 +82,11 @@ public class PortfolioModel {
     public void setProjects(List<ProjectModel> projects) {
         this.projects = projects;
     }
+    public ProgrammerProfileModel getOwner() {
+        return owner;
+    }
+
+    public void setOwner(ProgrammerProfileModel owner) {
+        this.owner = owner;
+    }
 }
