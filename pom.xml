@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ec.edu.ups.ppw</groupId>
-    <artifactId>gproyectos</artifactId>
+    <artifactId>proyecto</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>war</packaging>
-    <name>gproyectos</name>
+    <name>proyectos</name>
     <description>Insert description for your project here.</description>
 
     <properties>

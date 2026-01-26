@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "projects")
-public class ProjectModel {
+public class CategoriaModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

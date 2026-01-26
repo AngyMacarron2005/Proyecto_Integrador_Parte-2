@@ -3,77 +3,17 @@ package ec.edu.ups.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
-public class UserModel {
+@Table(name = "TBL_PRODUCTOS")
+public class ProductosModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "firebase_uid", unique = true)
-    private String firebaseUid;
+    @Column(name = "Nombre", unique = true)
+    private String Nombre;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "Descripcion")
+    private String descripcion;
 
-    @Column(name = "display_name")
-    private String displayName;
-
-    @Column(name = "picture")
-    private String picture;
-
-    @Column(name = "role")
-    private String role;
-
-    /* =======================
-       GETTERS Y SETTERS
-       ======================= */
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirebaseUid() {
-        return firebaseUid;
-    }
-
-    public void setFirebaseUid(String firebaseUid) {
-        this.firebaseUid = firebaseUid;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 }

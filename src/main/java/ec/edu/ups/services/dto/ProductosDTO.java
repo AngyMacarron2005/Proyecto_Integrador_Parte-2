@@ -1,6 +1,6 @@
 package ec.edu.ups.services.dto;
 
-public class ProgrammerProfileCreateDTO {
+public class ProductosDTO {
     public Long userId;
     public String name;
     public String specialty;

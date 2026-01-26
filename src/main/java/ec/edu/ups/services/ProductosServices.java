@@ -3,8 +3,8 @@ package ec.edu.ups.services;
 import java.net.URI;
 import java.util.List;
 
-import ec.edu.ups.dao.UserDAO;
-import ec.edu.ups.models.UserModel;
+import ec.edu.ups.dao.ProductosDAO;
+import ec.edu.ups.models.ProductosModel;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -14,26 +14,26 @@ import jakarta.ws.rs.core.UriInfo;
 @Path("users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class UserHttp {
+public class ProductosServices {
 
     @Inject
-    private UserDAO userDAO;
+    private ProductosDAO userDAO;
 
     @GET
-    public List<UserModel> list() {
+    public List<ProductosModel> list() {
         return userDAO.list();
     }
 
     @GET
     @Path("{id}")
-    public UserModel get(@PathParam("id") Long id) {
-        UserModel u = userDAO.find(id);
+    public ProductosModel get(@PathParam("id") Long id) {
+        ProductosModel u = userDAO.find(id);
         if (u == null) throw new NotFoundException("User not found: " + id);
         return u;
     }
 
     @POST
-    public Response create(UserModel body, @jakarta.ws.rs.core.Context UriInfo uriInfo) {
+    public Response create(ProductosModel body, @jakarta.ws.rs.core.Context UriInfo uriInfo) {
         if (body == null) throw new BadRequestException("Body required");
         userDAO.create(body);
 
@@ -45,10 +45,10 @@ public class UserHttp {
 
     @PUT
     @Path("{id}")
-    public UserModel update(@PathParam("id") Long id, UserModel body) {
+    public ProductosModel update(@PathParam("id") Long id, ProductosModel body) {
         if (body == null) throw new BadRequestException("Body required");
 
-        UserModel existing = userDAO.find(id);
+        ProductosModel existing = userDAO.find(id);
         if (existing == null) throw new NotFoundException("User not found: " + id);
 
         existing.setFirebaseUid(body.getFirebaseUid());

@@ -5,7 +5,7 @@ import java.util.List;
 import ec.edu.ups.models.Enums.ParticipationType;
 import ec.edu.ups.models.Enums.ProjectSection;
 
-public class ProjectCreateDTO {
+public class CategoriaDTO {
     public Long portfolioId;
 
     public String title;
