@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,8 +20,8 @@ import jakarta.persistence.Table;
 public class ProgrammerProfileModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
@@ -36,13 +37,13 @@ public class ProgrammerProfileModel {
     private LocalDateTime updatedAt;
     private boolean deleted = false;
 
-    @OneToOne(mappedBy = "owner")
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.PERSIST)
     private PortfolioModel portfolio;
 
     @OneToMany(mappedBy = "programmer")
     private List<ProgrammerAvailabilityModel> available;
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
+    
+    public Long getId() { return id; }
 
     public UserModel getUser() { return user; }
     public void setUser(UserModel user) { this.user = user; }

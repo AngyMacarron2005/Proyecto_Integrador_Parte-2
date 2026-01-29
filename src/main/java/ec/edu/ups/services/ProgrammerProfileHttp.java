@@ -1,6 +1,7 @@
 package ec.edu.ups.services;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,8 +9,12 @@ import ec.edu.ups.dao.ProgrammerProfileDAO;
 import ec.edu.ups.dao.UserDAO;
 import ec.edu.ups.models.ProgrammerProfileModel;
 import ec.edu.ups.models.UserModel;
+import ec.edu.ups.services.dto.ProgrammerOutputDTO;
 import ec.edu.ups.services.dto.ProgrammerProfileCreateDTO;
 import ec.edu.ups.services.dto.ProgrammerProfileUpdateDTO;
+import ec.edu.ups.services.dto.UserOutputDTO;
+import ec.edu.ups.services.shared.ApiResponse;
+import ec.edu.ups.services.shared.AppError;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -21,69 +26,75 @@ import jakarta.ws.rs.core.UriInfo;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ProgrammerProfileHttp {
 
-    @Inject private ProgrammerProfileDAO programmerDAO;
-    @Inject private UserDAO userDAO;
+	@Inject
+	private ProgrammerProfileDAO programmerDAO;
+	@Inject
+	private UserDAO userDAO;
 
-    @GET
-    public List<ProgrammerProfileModel> list() {
-        return programmerDAO.listActive();
-    }
+	@GET
+	public Response list() {
+		try {
+			List<ProgrammerProfileModel> programmers = programmerDAO.list();
+			List<ProgrammerOutputDTO> resp = new ArrayList<>();
+			for (ProgrammerProfileModel prog : programmers) {
+				ProgrammerOutputDTO dto = ProgrammerOutputDTO.fromModel(prog);
+				resp.add(dto);
+			}
 
-    @GET
-    @Path("{id}")
-    public ProgrammerProfileModel get(@PathParam("id") UUID id) {
-        ProgrammerProfileModel p = programmerDAO.find(id);
-        if (p == null || p.isDeleted()) throw new NotFoundException("Programmer not found: " + id);
-        return p;
-    }
+			return ApiResponse.success("Correcto", resp, 201);
+		} catch (Exception e) {
+			return ApiResponse.error(e);
+		}
+	}
 
-    @POST
-    public Response create(ProgrammerProfileCreateDTO body, @jakarta.ws.rs.core.Context UriInfo uriInfo) {
-        if (body == null) throw new BadRequestException("Body required");
-        if (body.userId == null) throw new BadRequestException("userId is required");
+	@GET
+	@Path("{id}")
+	public Response get(@PathParam("id") Long id) {
+		try {
+        	ProgrammerProfileModel u = programmerDAO.find(id);
+        	if (u == null) throw AppError.notFound("User not found: " + id);		
+        	ProgrammerOutputDTO resp = ProgrammerOutputDTO.fromModel(u);
+           
+        	return ApiResponse.success("Correcto", resp, 201);
+        } catch (Exception e) {
+            return ApiResponse.error(e);
+        }
+	}
 
-        UserModel user = userDAO.find(body.userId);
-        if (user == null) throw new NotFoundException("User not found: " + body.userId);
+	@POST
+	public Response create(ProgrammerProfileCreateDTO body, @jakarta.ws.rs.core.Context UriInfo uriInfo) {
+		 try {
+	        	if (body == null) throw AppError.validation("Body required",null);
+	        	UserModel user = userDAO.find(body.userId);
+	        	ProgrammerProfileModel u = programmerDAO.create(body,user);
+	        	
+	        	ProgrammerOutputDTO resp = ProgrammerOutputDTO.fromModel(u);
+	            return ApiResponse.success("Correcto", resp, 201);
+	        } catch (Exception e) {
+	            return ApiResponse.error(e);
+	        }
+	}
 
-        ProgrammerProfileModel p = new ProgrammerProfileModel();
-        p.setUser(user);
-        p.setName(body.name);
-        p.setSpecialty(body.specialty);
-        p.setBio(body.bio);
-        p.setAvatarUrl(body.avatarUrl);
-        p.setContactLinks(body.contactLinks);
+	@PUT
+	@Path("{id}")
+	public Response update(@PathParam("id") UUID id, ProgrammerProfileUpdateDTO body) {
+		try {
+        	if (body == null) throw AppError.validation("Body required",null);
+        	
+//        	UserModel existing = userDAO.find(id);
+//        	if (existing == null) throw AppError.notFound("User not found: " + id);
+//        	
+//        	
+//        	existing.setDisplayName(body.displayName);
+//        	existing.setRole(body.rol);
+//        	
+//        	userDAO.update(existing);
+//        
+        	
+            return ApiResponse.success("Correcto", null, 201);
+        } catch (Exception e) {
+            return ApiResponse.error(e);
+        }
 
-        programmerDAO.create(p);
-
-        URI location = uriInfo.getAbsolutePathBuilder()
-                              .path(p.getId().toString())
-                              .build();
-        return Response.created(location).entity(p).build();
-    }
-
-    @PUT
-    @Path("{id}")
-    public ProgrammerProfileModel update(@PathParam("id") UUID id, ProgrammerProfileUpdateDTO body) {
-        if (body == null) throw new BadRequestException("Body required");
-
-        ProgrammerProfileModel p = programmerDAO.find(id);
-        if (p == null || p.isDeleted()) throw new NotFoundException("Programmer not found: " + id);
-
-        if (body.name != null) p.setName(body.name);
-        if (body.specialty != null) p.setSpecialty(body.specialty);
-        if (body.bio != null) p.setBio(body.bio);
-        if (body.avatarUrl != null) p.setAvatarUrl(body.avatarUrl);
-        if (body.contactLinks != null) p.setContactLinks(body.contactLinks);
-        if (body.deleted != null) p.setDeleted(body.deleted);
-
-        return programmerDAO.update(p);
-    }
-
-    @DELETE
-    @Path("{id}")
-    public Response delete(@PathParam("id") UUID id) {
-        boolean ok = programmerDAO.softDelete(id);
-        if (!ok) throw new NotFoundException("Programmer not found: " + id);
-        return Response.noContent().build();
-    }
+	}
 }

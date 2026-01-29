@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.UUID;
 
 import ec.edu.ups.dao.PortfolioDAO;
-import ec.edu.ups.dao.ProjectDAO;
+import ec.edu.ups.dao.CategoriaDAO;
 import ec.edu.ups.models.PortfolioModel;
-import ec.edu.ups.models.ProjectModel;
-import ec.edu.ups.services.dto.ProjectCreateDTO;
+import ec.edu.ups.models.CategoriaModel;
+import ec.edu.ups.services.dto.CategoriaDTO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -18,34 +18,34 @@ import jakarta.ws.rs.core.UriInfo;
 @Path("projects")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ProjectHttp {
+public class CategoriaServices {
 
-    @Inject private ProjectDAO projectDAO;
+    @Inject private CategoriaDAO projectDAO;
     @Inject private PortfolioDAO portfolioDAO;
 
     @GET
-    public List<ProjectModel> list(@QueryParam("portfolioId") Long portfolioId) {
+    public List<CategoriaModel> list(@QueryParam("portfolioId") Long portfolioId) {
         if (portfolioId != null) return projectDAO.listByPortfolio(portfolioId);
         return projectDAO.listActive();
     }
 
     @GET
     @Path("{id}")
-    public ProjectModel get(@PathParam("id") UUID id) {
-        ProjectModel p = projectDAO.find(id);
+    public CategoriaModel get(@PathParam("id") UUID id) {
+        CategoriaModel p = projectDAO.find(id);
         if (p == null || p.isDeleted()) throw new NotFoundException("Project not found: " + id);
         return p;
     }
 
     @POST
-    public Response create(ProjectCreateDTO body, @jakarta.ws.rs.core.Context UriInfo uriInfo) {
+    public Response create(CategoriaDTO body, @jakarta.ws.rs.core.Context UriInfo uriInfo) {
         if (body == null) throw new BadRequestException("Body required");
         if (body.portfolioId == null) throw new BadRequestException("portfolioId required");
 
         PortfolioModel portfolio = portfolioDAO.find(body.portfolioId);
         if (portfolio == null || portfolio.isDeleted()) throw new NotFoundException("Portfolio not found: " + body.portfolioId);
 
-        ProjectModel p = new ProjectModel();
+        CategoriaModel p = new CategoriaModel();
         p.setPortfolio(portfolio);
         p.setTitle(body.title);
         p.setDescription(body.description);
@@ -64,10 +64,10 @@ public class ProjectHttp {
 
     @PUT
     @Path("{id}")
-    public ProjectModel update(@PathParam("id") UUID id, ProjectCreateDTO body) {
+    public CategoriaModel update(@PathParam("id") UUID id, CategoriaDTO body) {
         if (body == null) throw new BadRequestException("Body required");
 
-        ProjectModel p = projectDAO.find(id);
+        CategoriaModel p = projectDAO.find(id);
         if (p == null || p.isDeleted()) throw new NotFoundException("Project not found: " + id);
 
         if (body.portfolioId != null) {

@@ -12,8 +12,8 @@ import jakarta.persistence.*;
 public class ProgrammerAvailabilityModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "programmer_id", nullable = false)
@@ -32,9 +32,7 @@ public class ProgrammerAvailabilityModel {
     public ProgrammerAvailabilityModel() {}
 
     // getters & setters
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
+    public Long getId() { return id; }
     public ProgrammerProfileModel getProgrammer() { return programmer; }
     public void setProgrammer(ProgrammerProfileModel programmer) { this.programmer = programmer; }
 
