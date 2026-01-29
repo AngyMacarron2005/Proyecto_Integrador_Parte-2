@@ -12,8 +12,8 @@ import jakarta.persistence.*;
 public class BookingModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "requester_id", nullable = false)
@@ -34,6 +34,7 @@ public class BookingModel {
     @Column(length = 500)
     private String comment;
 
+    private String responseMessage;
     private String status = "PENDING";
 
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -42,12 +43,8 @@ public class BookingModel {
        GETTERS & SETTERS
        ===================== */
 
-    public UUID getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public UserModel getRequester() {
@@ -106,6 +103,14 @@ public class BookingModel {
         this.comment = comment;
     }
 
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
+    }
+    
     public String getStatus() {
         return status;
     }

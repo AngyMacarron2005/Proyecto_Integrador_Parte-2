@@ -3,6 +3,7 @@ package ec.edu.ups.dao;
 import java.util.List;
 
 import ec.edu.ups.models.UserModel;
+import ec.edu.ups.services.dto.UserCreateDTO;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -13,9 +14,17 @@ public class UserDAO {
     @PersistenceContext
     private EntityManager em;
 
-    public UserModel create(UserModel user) {
-        em.persist(user);
-        return user;
+    public UserModel create(UserCreateDTO dto) {
+    	 UserModel entity = new UserModel();
+    	    entity.setFirebaseUid(dto.firebaseUid);
+    	    entity.setEmail(dto.email);
+    	    entity.setDisplayName(dto.displayName);
+    	    entity.setPicture(dto.foto_perfil); // DTO name -> entity column "picture"
+
+
+    	    entity.setRole("USER");
+        em.persist(entity);
+        return entity;
     }
 
     public UserModel find(Long id) {
@@ -31,10 +40,4 @@ public class UserDAO {
         return em.merge(user);
     }
 
-    public boolean delete(Long id) {
-        UserModel u = find(id);
-        if (u == null) return false;
-        em.remove(u);
-        return true;
-    }
 }

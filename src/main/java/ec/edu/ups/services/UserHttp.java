@@ -1,10 +1,16 @@
 package ec.edu.ups.services;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import ec.edu.ups.dao.UserDAO;
 import ec.edu.ups.models.UserModel;
+import ec.edu.ups.services.dto.UserCreateDTO;
+import ec.edu.ups.services.dto.UserOutputDTO;
+import ec.edu.ups.services.dto.UserUpdateDTO;
+import ec.edu.ups.services.shared.ApiResponse;
+import ec.edu.ups.services.shared.AppError;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -20,51 +26,68 @@ public class UserHttp {
     private UserDAO userDAO;
 
     @GET
-    public List<UserModel> list() {
-        return userDAO.list();
+    public Response list() {
+    	try {
+    		List<UserModel> users = userDAO.list();
+    		List<UserOutputDTO> resp = new ArrayList<>();
+    		for (UserModel user : users) {
+    			UserOutputDTO dto = UserOutputDTO.fromModel(user);
+    			resp.add(dto);
+    		}
+    							
+            return ApiResponse.success("Correcto", resp, 201);
+        } catch (Exception e) {
+            return ApiResponse.error(e);
+        }
     }
 
     @GET
     @Path("{id}")
-    public UserModel get(@PathParam("id") Long id) {
-        UserModel u = userDAO.find(id);
-        if (u == null) throw new NotFoundException("User not found: " + id);
-        return u;
+    public Response get(@PathParam("id") Long id) {
+        try {
+        	UserModel u = userDAO.find(id);
+        	if (u == null) throw AppError.notFound("User not found: " + id);		
+           UserOutputDTO resp = UserOutputDTO.fromModel(u);
+           
+        	return ApiResponse.success("Correcto", resp, 201);
+        } catch (Exception e) {
+            return ApiResponse.error(e);
+        }
     }
 
     @POST
-    public Response create(UserModel body, @jakarta.ws.rs.core.Context UriInfo uriInfo) {
-        if (body == null) throw new BadRequestException("Body required");
-        userDAO.create(body);
-
-        URI location = uriInfo.getAbsolutePathBuilder()
-                              .path(String.valueOf(body.getId()))
-                              .build();
-        return Response.created(location).entity(body).build();
+    public Response create(UserCreateDTO body, @jakarta.ws.rs.core.Context UriInfo uriInfo) {
+        try {
+        	if (body == null) throw AppError.validation("Body required",null);
+        	UserModel u = userDAO.create(body);
+        	
+        	UserOutputDTO resp = UserOutputDTO.fromModel(u);
+            return ApiResponse.success("Correcto", resp, 201);
+        } catch (Exception e) {
+            return ApiResponse.error(e);
+        }
     }
 
     @PUT
     @Path("{id}")
-    public UserModel update(@PathParam("id") Long id, UserModel body) {
-        if (body == null) throw new BadRequestException("Body required");
-
-        UserModel existing = userDAO.find(id);
-        if (existing == null) throw new NotFoundException("User not found: " + id);
-
-        existing.setFirebaseUid(body.getFirebaseUid());
-        existing.setEmail(body.getEmail());
-        existing.setDisplayName(body.getDisplayName());
-        existing.setPicture(body.getPicture());
-        existing.setRole(body.getRole());
-
-        return userDAO.update(existing);
+    public Response update(@PathParam("id") Long id, UserUpdateDTO body) {
+        try {
+        	if (body == null) throw AppError.validation("Body required",null);
+        	
+        	UserModel existing = userDAO.find(id);
+        	if (existing == null) throw AppError.notFound("User not found: " + id);
+        	
+        	
+        	existing.setDisplayName(body.displayName);
+        	existing.setRole(body.rol);
+        	
+        	userDAO.update(existing);
+        
+        	
+            return ApiResponse.success("Correcto",existing, 201);
+        } catch (Exception e) {
+            return ApiResponse.error(e);
+        }
     }
-
-    @DELETE
-    @Path("{id}")
-    public Response delete(@PathParam("id") Long id) {
-        boolean ok = userDAO.delete(id);
-        if (!ok) throw new NotFoundException("User not found: " + id);
-        return Response.noContent().build();
-    }
+    
 }

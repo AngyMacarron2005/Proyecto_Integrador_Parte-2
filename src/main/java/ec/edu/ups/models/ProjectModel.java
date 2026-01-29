@@ -13,8 +13,8 @@ import jakarta.persistence.*;
 public class ProjectModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "portfolio_id", nullable = false)
@@ -55,12 +55,8 @@ public class ProjectModel {
        GETTERS & SETTERS
        ===================== */
 
-    public UUID getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public PortfolioModel getPortfolio() {
